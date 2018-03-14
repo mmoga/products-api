@@ -14,7 +14,7 @@ const products = [
         created: new Date()
     },
     {
-        _id: 'fr3t53hg35g',
+        _id: '1',
         name: "Rug",
         price: 96.75,
         imgSrc: 'https://via.placeholder.com/250x250',
