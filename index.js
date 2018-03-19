@@ -1,6 +1,6 @@
 const express = require('express');
 const serverApp = express();
-const mongoose = require('mongoose');
+const mongoose = require('mongoose'); // mongoose is like our JS/Mongo translator
 
 require('dotenv').config();
 
