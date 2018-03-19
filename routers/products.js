@@ -83,7 +83,18 @@ router.put('/products/:id', (req, res) => {
 });
 // delete (DELETE)
 router.delete('/products/:id', (req, res) => {
-    res.send('Deleting something rn');
+    const { id } = req.params;
+    Product.findByIdAndRemove(id)
+        .then(response => {
+            res.status(200).json({
+                msg: "Successfully deleted"
+            });
+        })
+        .catch(err => {
+            res.status(500).status.json({
+                msg: "Soemthing's off here..."
+            });
+        });
 });
 
 module.exports = router; // like export default in React
