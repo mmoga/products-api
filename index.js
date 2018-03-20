@@ -24,6 +24,11 @@ serverApp.get('/', (req, res) => {
 });
 
 serverApp.use(notFound);
+serverApp.use(function serverErrorHandler(err, req, res, next){
+    res.status(500).json({
+        msg: "something done broke"
+    })
+});
 
 serverApp.listen(PORT, () => {
     console.log(`Now listening on port ${PORT}`);
