@@ -21,7 +21,7 @@ arrayOfProducts.forEach(product => {
     return accumulator;
 }
 
-router.get('/products', (req, res) => {
+router.get('/products', (req, res, next) => {
     Product.find()
         .exec()
         .then(allProducts => {
@@ -29,14 +29,10 @@ router.get('/products', (req, res) => {
                 products: productArrToObj(allProducts)
             });
         })
-        .catch(err => {
-            res.status(500).json({
-                msg: "Another error :-O"
-            })
-        });
+        .catch(next);
 });
 
-router.get('/products/:id', (req, res) => {
+router.get('/products/:id', (req, res, next) => {
     const { id } = req.params;
     Product.findById(id)
         .exec()
@@ -50,38 +46,36 @@ router.get('/products/:id', (req, res) => {
                 }
             });
         })
-        .catch(err => {
-            res.status(500).json({
-                msg: "Don't look back!"
-            });
-        });
+        .catch(next);
 });
 
 // post means "create"
-router.post('/products', (req,res) => {
+router.post('/products', (req,res, next) => {
+    if(!req.body.name){
+        next({msg: "bad request"})
+    }
     const product = new Product({
-        name: 'something',
-        price: 1000,
-        imgSrc: 'https://via.placeholder.com/250x250'
+        name: req.body.name,
+        price: req.body.price,
+        imgSrc: req.body.imgSrc
     });
-    product.save()
+    product
+        .save()
         .then(response => {
             res.status(201).json({
                 msg: 'Successfully created product'
             });
         })
-        .catch(err => {
-            res.status(500).json({
-                msg: "There was an error :-/"
-            });
-        });
+        .catch(next);
 });
 
 // update (PUT)
-router.put('/products/:id', (req, res) => {
+router.put('/products/:id', (req, res, next) => {
     const { id } = req.params;
     const update = {
-        name: "updated name"
+        name: req.body.name,
+        price: req.body.price,
+        imgSrc: req.body.imgSrc
     };
     Product.findByIdAndUpdate(id, update)
         .then(response => {
@@ -89,14 +83,10 @@ router.put('/products/:id', (req, res) => {
                 msg: "You have been updated, my man!"
             })
         })
-        .catch(err => {
-            res.status(500).json({
-                    msg: "Failed to send"
-            })
-        });
+        .catch(next);
 });
 // delete (DELETE)
-router.delete('/products/:id', (req, res) => {
+router.delete('/products/:id', (req, res, next) => {
     const { id } = req.params;
     Product.findByIdAndRemove(id)
         .then(response => {
@@ -104,11 +94,7 @@ router.delete('/products/:id', (req, res) => {
                 msg: "Successfully deleted"
             });
         })
-        .catch(err => {
-            res.status(500).status.json({
-                msg: "Soemthing's off here..."
-            });
-        });
+        .catch(next);
 });
 
 module.exports = router; // like export default in React
